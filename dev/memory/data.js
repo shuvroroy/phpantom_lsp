@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785607672943,
+  "lastUpdate": 1785612379550,
   "repoUrl": "https://github.com/shuvroroy/phpantom_lsp",
   "entries": {
     "PHPantom Memory Usage": [
@@ -237,6 +237,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "memory_laravel_model",
             "value": 73.9,
+            "unit": "MiB"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "shuvro.nsu.cse@gmail.com",
+            "name": "Shuvro Roy",
+            "username": "shuvroroy"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "976bb69a9d4dca6686d3b4fc687764b595f3cdc0",
+          "message": "Route parameter name completion",
+          "timestamp": "2026-08-01T20:51:44+02:00",
+          "tree_id": "1c07c72716da06536260f1f0c9f97f0c64195174",
+          "url": "https://github.com/shuvroroy/phpantom_lsp/commit/976bb69a9d4dca6686d3b4fc687764b595f3cdc0"
+        },
+        "date": 1785612378807,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "memory_hello_world",
+            "value": 33.7,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_laravel_model",
+            "value": 74.1,
             "unit": "MiB"
           }
         ]
