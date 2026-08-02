@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1785613815255,
+  "lastUpdate": 1785649919074,
   "repoUrl": "https://github.com/shuvroroy/phpantom_lsp",
   "entries": {
     "PHPantom Memory Usage": [
@@ -305,6 +305,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "memory_laravel_model",
             "value": 72.6,
+            "unit": "MiB"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "cdwhite3@pm.me",
+            "name": "Caleb White",
+            "username": "calebdw"
+          },
+          "committer": {
+            "email": "cdwhite3@pm.me",
+            "name": "Caleb White",
+            "username": "calebdw"
+          },
+          "distinct": true,
+          "id": "b9d0da90554862fe867d6e3b3ca00139f53856cf",
+          "message": "docs: update nvim installation instructions\n\nCloses #310",
+          "timestamp": "2026-08-01T19:01:44-05:00",
+          "tree_id": "ef31ad51851e08623dbed919c501fe3669c0bd31",
+          "url": "https://github.com/shuvroroy/phpantom_lsp/commit/b9d0da90554862fe867d6e3b3ca00139f53856cf"
+        },
+        "date": 1785649918763,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "memory_hello_world",
+            "value": 34.5,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_laravel_model",
+            "value": 74.5,
             "unit": "MiB"
           }
         ]
