@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1786861426827,
+  "lastUpdate": 1786903734294,
   "repoUrl": "https://github.com/shuvroroy/phpantom_lsp",
   "entries": {
     "PHPantom Memory Usage": [
@@ -747,6 +747,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "memory_laravel_model",
             "value": 82.7,
+            "unit": "MiB"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "committer": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "distinct": false,
+          "id": "1b2705869265c17c098eeb0ec73d9ed4c7ef1146",
+          "message": "A non-Laravel project's own `config()`, `route()`, `view()`, `__()`, or\n`trans()` function no longer hovers, navigates, or renames as a Laravel\nstring key",
+          "timestamp": "2026-08-16T19:21:34+02:00",
+          "tree_id": "b159658533d1fc800f451a78ef98e643a4652c9b",
+          "url": "https://github.com/shuvroroy/phpantom_lsp/commit/1b2705869265c17c098eeb0ec73d9ed4c7ef1146"
+        },
+        "date": 1786903733512,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "memory_hello_world",
+            "value": 36.1,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_laravel_model",
+            "value": 83,
             "unit": "MiB"
           }
         ]
