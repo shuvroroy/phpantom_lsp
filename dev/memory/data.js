@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1789919803134,
+  "lastUpdate": 1790263955194,
   "repoUrl": "https://github.com/shuvroroy/phpantom_lsp",
   "entries": {
     "PHPantom Memory Usage": [
@@ -1087,6 +1087,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "memory_laravel_model",
             "value": 75,
+            "unit": "MiB"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "shuvro.nsu.cse@gmail.com",
+            "name": "Shuvro Roy",
+            "username": "shuvroroy"
+          },
+          "committer": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "distinct": true,
+          "id": "47c6b37948ee49edf58f70ad9fbe0f5e4ad16f7d",
+          "message": "feat(laravel): infer string keys for UUID and ULID models\n\nRecognize HasUuids and HasUlids through composed traits and parent models when resolving implicit primary keys. Preserve existing property precedence and custom key names.\n\nAdd provider and LSP regression tests, Laravel demos with runtime assertions, and changelog documentation. Remove the completed backlog item.",
+          "timestamp": "2026-09-24T14:42:18+02:00",
+          "tree_id": "458ad11da7221599890bfa6ced6c1000fd8163f6",
+          "url": "https://github.com/shuvroroy/phpantom_lsp/commit/47c6b37948ee49edf58f70ad9fbe0f5e4ad16f7d"
+        },
+        "date": 1790263954464,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "memory_hello_world",
+            "value": 37.8,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_laravel_model",
+            "value": 78.1,
             "unit": "MiB"
           }
         ]
