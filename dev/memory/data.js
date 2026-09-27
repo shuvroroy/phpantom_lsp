@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1790263955194,
+  "lastUpdate": 1790552446954,
   "repoUrl": "https://github.com/shuvroroy/phpantom_lsp",
   "entries": {
     "PHPantom Memory Usage": [
@@ -1121,6 +1121,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "memory_laravel_model",
             "value": 78.1,
+            "unit": "MiB"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "sidux@users.noreply.github.com",
+            "name": "sidux",
+            "username": "sidux"
+          },
+          "committer": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "distinct": true,
+          "id": "025f42aaf9823f6eb26c3f60f02cb6b22b9d966e",
+          "message": "feat(php): Add implementation CodeLens\n\nInterfaces and abstract classes, and the methods they declare, show a\nclickable implementation count that lists every implementation, including\nmethods inherited unchanged or supplied by a trait. The count is worked out\nfrom class metadata and the locations are resolved lazily, like the\nreference lens. It replaces the read-only implementation-count inlay hint.",
+          "timestamp": "2026-09-27T23:41:20+02:00",
+          "tree_id": "2b8eafaa8a4b0952a52acc561262125e9957830b",
+          "url": "https://github.com/shuvroroy/phpantom_lsp/commit/025f42aaf9823f6eb26c3f60f02cb6b22b9d966e"
+        },
+        "date": 1790552446115,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "memory_hello_world",
+            "value": 38.2,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_laravel_model",
+            "value": 83.6,
             "unit": "MiB"
           }
         ]
