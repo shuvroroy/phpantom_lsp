@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792992526918,
+  "lastUpdate": 1793041418281,
   "repoUrl": "https://github.com/shuvroroy/phpantom_lsp",
   "entries": {
     "PHPantom Memory Usage": [
@@ -1466,6 +1466,45 @@ window.BENCHMARK_DATA = {
           {
             "name": "memory_symfony_controller",
             "value": 73.1,
+            "unit": "MiB"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "aarondoom@cookiedoom.com",
+            "name": "Aaron Doom",
+            "username": "SuperFes"
+          },
+          "committer": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "distinct": true,
+          "id": "0b23addf79d9aab573e7ea391a7bb82e4017c282",
+          "message": "Decline a stale inlay hint request instead of answering it with nothing\n\nThe symbol map a file's hints are read from is rebuilt on a background\ntask, so a request arriving between a keystroke and that rebuild was\nanswered with offsets describing the previous text: labels landed inside\nthe arguments they name, and because the visible range was measured\nagainst the newer text while the hints were not, the following call's\nhints were pulled onto the edited line and drawn twice.\n\n`handle_inlay_hints` now declines that request. Returning `Ok(None)` for\nit is not enough on its own -- a null result is indistinguishable from\n\"no hints here\", so a client replaces the labels it is showing with an\nempty set and the line stays bare until something re-pulls it. Answering\n`ContentModified` says what actually happened, and a client that\nunderstands it keeps what it has and re-pulls on the `inlayHint/refresh`\nsent once the rebuild commits.\n\nNo content to work from, or a blocking task that died, still answer\n`Ok(None)`: neither is a document-version problem, and re-requesting\nwould not change either one.",
+          "timestamp": "2026-10-26T19:47:41+01:00",
+          "tree_id": "9459de6bcf4fe28fca074496830883632b96162c",
+          "url": "https://github.com/shuvroroy/phpantom_lsp/commit/0b23addf79d9aab573e7ea391a7bb82e4017c282"
+        },
+        "date": 1793041416812,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "memory_hello_world",
+            "value": 42.2,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_laravel_model",
+            "value": 86.6,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_symfony_controller",
+            "value": 75.4,
             "unit": "MiB"
           }
         ]
