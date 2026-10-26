@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1792677057485,
+  "lastUpdate": 1792992526918,
   "repoUrl": "https://github.com/shuvroroy/phpantom_lsp",
   "entries": {
     "PHPantom Memory Usage": [
@@ -1427,6 +1427,45 @@ window.BENCHMARK_DATA = {
           {
             "name": "memory_laravel_model",
             "value": 77.9,
+            "unit": "MiB"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "committer": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "distinct": true,
+          "id": "8c0704a3da4467c8bc543e75674a5ea4a24ae3d4",
+          "message": "Stub packages installed with Composer",
+          "timestamp": "2026-10-25T21:55:40+01:00",
+          "tree_id": "738257156c80de05412e4c70a3da9f605fca4264",
+          "url": "https://github.com/shuvroroy/phpantom_lsp/commit/8c0704a3da4467c8bc543e75674a5ea4a24ae3d4"
+        },
+        "date": 1792992526015,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "memory_hello_world",
+            "value": 45.1,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_laravel_model",
+            "value": 83.3,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_symfony_controller",
+            "value": 73.1,
             "unit": "MiB"
           }
         ]
