@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793043639123,
+  "lastUpdate": 1793045770659,
   "repoUrl": "https://github.com/shuvroroy/phpantom_lsp",
   "entries": {
     "PHPantom Memory Usage": [
@@ -1544,6 +1544,45 @@ window.BENCHMARK_DATA = {
           {
             "name": "memory_symfony_controller",
             "value": 72.7,
+            "unit": "MiB"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "shuvro.nsu.cse@gmail.com",
+            "name": "Shuvro Roy",
+            "username": "shuvroroy"
+          },
+          "committer": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "distinct": true,
+          "id": "9677d0f6b1810d8eccdcdb0a5dd057d9626b283d",
+          "message": "Complete morph aliases and config keys as array keys\n\nRegistered morph aliases are suggested for the keys of\nRelation::morphMap([...]), and config keys for the keys of\nConfig::set([...]) and config([...]). Includes integration tests and\na Laravel demo with runtime assertions.\n\nCo-Authored-By: Anders Jenbo <anders@jenbo.dk>\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>",
+          "timestamp": "2026-10-26T20:45:16+01:00",
+          "tree_id": "2902ab89645fd67d3e312c16cb6d24897c98e2a5",
+          "url": "https://github.com/shuvroroy/phpantom_lsp/commit/9677d0f6b1810d8eccdcdb0a5dd057d9626b283d"
+        },
+        "date": 1793045769569,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "memory_hello_world",
+            "value": 39.9,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_laravel_model",
+            "value": 82.3,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_symfony_controller",
+            "value": 74.3,
             "unit": "MiB"
           }
         ]
