@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793041418281,
+  "lastUpdate": 1793043639123,
   "repoUrl": "https://github.com/shuvroroy/phpantom_lsp",
   "entries": {
     "PHPantom Memory Usage": [
@@ -1505,6 +1505,45 @@ window.BENCHMARK_DATA = {
           {
             "name": "memory_symfony_controller",
             "value": 75.4,
+            "unit": "MiB"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "dev@eranmachiels.nl",
+            "name": "EranNL",
+            "username": "EranNL"
+          },
+          "committer": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "distinct": true,
+          "id": "42d764ba2c1596b336cfd13d5d3fc5ec83bdfc34",
+          "message": "Show member return types in JetBrains completion popups\n\nMethod and property completion items carried their type only in\n`detail`, with the declaring class in `label_details.description`.\nJetBrains IDEs show `detail` only when no description is set, so the\ntype was never visible there. Repeat the type in `label_details.detail`\n(`: ?User`) so it renders inline after the label in every client.",
+          "timestamp": "2026-10-26T20:23:55+01:00",
+          "tree_id": "bb5f2849be3248afce50c1676d2d7161c9666fb1",
+          "url": "https://github.com/shuvroroy/phpantom_lsp/commit/42d764ba2c1596b336cfd13d5d3fc5ec83bdfc34"
+        },
+        "date": 1793043638415,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "memory_hello_world",
+            "value": 44.9,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_laravel_model",
+            "value": 85.2,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_symfony_controller",
+            "value": 72.7,
             "unit": "MiB"
           }
         ]
