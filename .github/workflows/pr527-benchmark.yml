@@ -1,0 +1,53 @@
+name: PR 527 Linux comparison
+
+on:
+  push:
+    branches: [diagnostics/pr527-linux-benchmarks]
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_BUILD_TARGET: x86_64-unknown-linux-musl
+  CARGO_PROFILE_DEV_DEBUG: line-tables-only
+  CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_RUSTFLAGS: -C link-arg=-fuse-ld=mold
+  CARGO_TARGET_DIR: ${{ github.workspace }}/target
+  BASE_COMMIT: 7e4684e7c797b5327782c4a0d11eb08e29f324b8
+  HEAD_COMMIT: a7b69016767078d42af75a738b0927a55e7ae5a8
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ env.CARGO_BUILD_TARGET }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: pr527-comparison
+      - name: Set up musl build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y musl-tools mold
+      - name: Record runner and compiler
+        run: |
+          mkdir -p pr527-results
+          lscpu | tee pr527-results/cpu.txt
+          uname -a | tee pr527-results/kernel.txt
+          rustc --version --verbose | tee pr527-results/compiler.txt
+      - name: Compare parent and PR on this runner
+        run: python3 scripts/pr527_benchmark_comparison.py
+      - name: Save comparison evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr527-linux-comparison
+          path: pr527-results/
+          if-no-files-found: error
+          retention-days: 7
