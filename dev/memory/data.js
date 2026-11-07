@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1793993311380,
+  "lastUpdate": 1794028993543,
   "repoUrl": "https://github.com/shuvroroy/phpantom_lsp",
   "entries": {
     "PHPantom Memory Usage": [
@@ -1960,6 +1960,60 @@ window.BENCHMARK_DATA = {
           {
             "name": "memory_yii_action",
             "value": 110.8,
+            "unit": "MiB"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "committer": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "distinct": true,
+          "id": "689f87092e27eacef061a6b0dac599f92502e46b",
+          "message": "Closures declared to return `float`",
+          "timestamp": "2026-11-07T04:38:56+01:00",
+          "tree_id": "d6b24be7ada36945e3acedf92a29f4ca9e3cb85c",
+          "url": "https://github.com/shuvroroy/phpantom_lsp/commit/689f87092e27eacef061a6b0dac599f92502e46b"
+        },
+        "date": 1794028992774,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "memory_drupal_module",
+            "value": 327.3,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_hello_world",
+            "value": 47.3,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_laravel_model",
+            "value": 87.2,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_symfony_controller",
+            "value": 76.8,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_wordpress_plugin",
+            "value": 138.2,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_yii_action",
+            "value": 111.3,
             "unit": "MiB"
           }
         ]
