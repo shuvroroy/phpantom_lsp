@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794115132817,
+  "lastUpdate": 1794119603530,
   "repoUrl": "https://github.com/shuvroroy/phpantom_lsp",
   "entries": {
     "PHPantom Memory Usage": [
@@ -2132,6 +2132,65 @@ window.BENCHMARK_DATA = {
           {
             "name": "memory_yii_action",
             "value": 107.6,
+            "unit": "MiB"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "committer": {
+            "email": "anders@jenbo.dk",
+            "name": "Anders Jenbo",
+            "username": "AJenbo"
+          },
+          "distinct": true,
+          "id": "3d41c4f055ef95c848ff4805caebc1437ccf370e",
+          "message": "Yii aliases",
+          "timestamp": "2026-11-08T06:45:19+01:00",
+          "tree_id": "9935937966b461067d040104efdcbe6e3b2f8b69",
+          "url": "https://github.com/shuvroroy/phpantom_lsp/commit/3d41c4f055ef95c848ff4805caebc1437ccf370e"
+        },
+        "date": 1794119602784,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "memory_drupal_module",
+            "value": 318.1,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_hello_world",
+            "value": 43.9,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_laravel_model",
+            "value": 83.8,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_symfony_controller",
+            "value": 80.6,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_tempest_view",
+            "value": 70.8,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_wordpress_plugin",
+            "value": 73.6,
+            "unit": "MiB"
+          },
+          {
+            "name": "memory_yii_action",
+            "value": 106,
             "unit": "MiB"
           }
         ]
