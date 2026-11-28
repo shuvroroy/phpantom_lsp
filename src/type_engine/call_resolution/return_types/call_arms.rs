@@ -942,6 +942,7 @@ impl Backend {
                         text_args,
                         func_info.return_type.as_ref(),
                         Some(&arg_ty_resolver),
+                        None,
                         Some(&class_loader),
                     )
                 });

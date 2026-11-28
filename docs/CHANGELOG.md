@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`::class` on a string literal is that string.** `'Foo'::class` is typed `'Foo'` rather than having no type.
 - **A reference to a property shares its value.** After `$r = &$obj->prop`, a write to the property changes what `$r` holds, and a write to `$r` changes the property.
 - **A variable variable with a computed name keeps the other locals.** After `$$name = 'x'`, the variables assigned before it keep their types instead of all becoming `mixed`. A literal name such as `${'total'} = 0` still replaces only that variable.
+- **`array_search()` finds a value the code already checked.** After `$arr[17] === 'foo'`, `array_search('foo', $arr)` is the array's key type instead of also allowing `false`.
 - **Arithmetic on numeric-string literals keeps the number.** `$digit + $offset` with `$digit` typed `'1'|'2'|'3'` and `$offset` an `int<1, 14>` is `int<2, 17>`, and `'1e3' + $offset` is a `float`, instead of `int|float`.
 - **Concatenation keeps the letter case.** `'0' . $int` is typed `lowercase-string&uppercase-string` too, and joining two lowercase (or two uppercase) strings stays lowercase (or uppercase).
 - **Concatenating a `bool` or a `float` can stay a number.** `$int . $bool` and `$float . $positiveInt` are typed `numeric-string`, since a `bool` converts to `''` or `'1'` and a float followed by more digits is still a number.

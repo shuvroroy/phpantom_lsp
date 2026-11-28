@@ -7,12 +7,15 @@
 //! differs from an entry skips its key, and anything undecided keeps the key
 //! and searches on.
 
-use crate::php_type::{LiteralValue, PhpType, is_decimal_int_array_key, runtime_shape_keys};
+use crate::php_type::{
+    LiteralValue, PhpType, TypeKind, is_decimal_int_array_key, runtime_shape_keys,
+};
 
 use super::CallArgs;
 
 pub(super) fn return_type(args: &CallArgs<'_>) -> Option<PhpType> {
-    let haystack = args.resolve(&args.text("$haystack")?)?;
+    let haystack_text = args.text("$haystack")?;
+    let haystack = args.resolve(&haystack_text)?;
     let needle = args.resolve(&args.text("$needle")?)?;
     let strict = match args.text("$strict") {
         None => false,
@@ -28,16 +31,31 @@ pub(super) fn return_type(args: &CallArgs<'_>) -> Option<PhpType> {
             results.push(ty);
         }
     };
+    // An element the scope narrowed to the needle (`$arr[17] === 'foo'`)
+    // is an entry the search is certain to find.
+    let mut needle_held = None;
+    let mut is_needle_held = || {
+        *needle_held.get_or_insert_with(|| {
+            args.element_reads.is_some_and(|reads| {
+                reads(haystack_text.trim())
+                    .iter()
+                    .any(|value| compare(&needle, value, strict) == Some(true))
+            })
+        })
+    };
     for member in haystack.strip_benevolence().union_members() {
         let Some(parts) = member.shape_parts().filter(|parts| parts.tail.is_none()) else {
             // A generic array is left to the declared `TKey|false`, unless
             // a strict search is for a value of a type none of the values
-            // has.
+            // has, or the needle is certain to be there.
             let value = member.extract_value_type(false)?;
-            if !(strict && compare(&needle, value, true) == Some(false)) {
+            if strict && compare(&needle, value, true) == Some(false) {
+                push(PhpType::false_());
+            } else if is_needle_held() {
+                push(generic_key_type(member)?);
+            } else {
                 return None;
             }
-            push(PhpType::false_());
             continue;
         };
         let keys = runtime_shape_keys(parts.entries)?;
@@ -69,6 +87,23 @@ pub(super) fn return_type(args: &CallArgs<'_>) -> Option<PhpType> {
         return None;
     }
     Some(PhpType::union(results))
+}
+
+/// The keys of a generic array: its declared key type, counting up from
+/// zero for a list, and any array key for `array<T>` and `T[]`.
+fn generic_key_type(array: &PhpType) -> Option<PhpType> {
+    match array.kind() {
+        TypeKind::Array(_) => Some(PhpType::union(vec![PhpType::int(), PhpType::string()])),
+        TypeKind::Generic(g) => match (g.name.to_ascii_lowercase().as_str(), g.args.len()) {
+            ("array" | "non-empty-array", 2) => Some(g.args[0].clone()),
+            ("array" | "non-empty-array", 1) => {
+                Some(PhpType::union(vec![PhpType::int(), PhpType::string()]))
+            }
+            ("list" | "non-empty-list", 1) => Some(PhpType::int_range("0", "max")),
+            _ => None,
+        },
+        _ => None,
+    }
 }
 
 /// A scalar a type is exactly.

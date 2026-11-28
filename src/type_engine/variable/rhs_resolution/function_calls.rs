@@ -459,12 +459,22 @@ fn named_function_call<'b>(
                     ctx.file.class_loader,
                 )
             };
+            let element_reads = |array: &str| -> Vec<PhpType> {
+                ctx.scope_proofs.as_ref().map_or_else(Vec::new, |proofs| {
+                    proofs
+                        .locals
+                        .element_reads(array)
+                        .map(|types| ResolvedType::types_joined(types))
+                        .collect()
+                })
+            };
             crate::type_engine::type_ops::call_site_returns::call_site_return_type(
                 name,
                 &func_info.parameters,
                 &text_args,
                 func_info.return_type.as_ref(),
                 Some(&arg_ty_resolver),
+                Some(&element_reads),
                 Some(&class_loader),
             )
         });

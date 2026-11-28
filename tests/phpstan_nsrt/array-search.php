@@ -29,8 +29,8 @@ class Foo
 		}
 
 		if (array_key_exists(17, $arr) && $arr[17] === 'foo') {
-			assertType('int', array_search('foo', $arr, true)); // SKIP: an offset narrowed to the needle's value does not rule out `false`
-			assertType('int', array_search('foo', $arr)); // SKIP: an offset narrowed to the needle's value does not rule out `false`
+			assertType('int', array_search('foo', $arr, true));
+			assertType('int', array_search('foo', $arr));
 			assertType('int|false', array_search($string, $arr, true));
 		}
 	}

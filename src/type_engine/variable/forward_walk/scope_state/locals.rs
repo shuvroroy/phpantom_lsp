@@ -31,6 +31,37 @@ fn is_compound(key: &str) -> bool {
         .any(|b| !(b.is_ascii_alphanumeric() || b == b'_' || b == b'$' || b >= 0x80))
 }
 
+/// Whether `index`, the text between the outer brackets of `$a[…]`, keeps
+/// its brackets balanced throughout, so the brackets around it are one
+/// group rather than the first and last of `$a[1][2]`.
+fn is_single_bracket_group(index: &str) -> bool {
+    let mut depth = 0usize;
+    let mut quote = None;
+    let mut escaped = false;
+    for b in index.bytes() {
+        if let Some(q) = quote {
+            if escaped {
+                escaped = false;
+            } else if b == b'\\' {
+                escaped = true;
+            } else if b == q {
+                quote = None;
+            }
+            continue;
+        }
+        match b {
+            b'\'' | b'"' => quote = Some(b),
+            b'[' => depth += 1,
+            b']' => match depth.checked_sub(1) {
+                Some(d) => depth = d,
+                None => return false,
+            },
+            _ => {}
+        }
+    }
+    depth == 0 && quote.is_none()
+}
+
 impl Locals {
     pub fn len(&self) -> usize {
         self.map.len()
@@ -133,6 +164,25 @@ impl Locals {
     /// The keys that are not a bare variable name.
     pub fn compound_keys(&self) -> impl Iterator<Item = &Atom> {
         self.compound.keys()
+    }
+
+    /// The types held for reads of one element of `array` (`$a[17]`,
+    /// `$a['k']`), each a value the array is known to hold. Reads nested
+    /// deeper (`$a[1][2]`) are not elements of `array` itself.
+    pub fn element_reads<'a>(
+        &'a self,
+        array: &'a str,
+    ) -> impl Iterator<Item = &'a Vec<ResolvedType>> + 'a {
+        self.compound.keys().filter_map(move |key| {
+            let index = key
+                .strip_prefix(array)?
+                .strip_prefix('[')?
+                .strip_suffix(']')?;
+            if !is_single_bracket_group(index) {
+                return None;
+            }
+            self.map.get(key)
+        })
     }
 
     pub fn keys(&self) -> impl Iterator<Item = &Atom> {

@@ -278,12 +278,14 @@ pub(crate) fn call_site_return_type(
     text_args: &str,
     declared: Option<&PhpType>,
     arg_type_resolver: ArgTypeResolver<'_>,
+    element_reads: ElementReads<'_>,
     class_loader: Option<&ResolvedClassLoader<'_>>,
 ) -> Option<PhpType> {
     let args = CallArgs {
         params,
         args: split_top_level_commas(text_args),
         resolver: arg_type_resolver,
+        element_reads,
     };
     match classify(func_name)? {
         CallSiteFunction::JsonEncode => json_encode_return(&args, declared?),
@@ -471,10 +473,16 @@ fn mb_substitute_character_return(args: &CallArgs<'_>) -> Option<PhpType> {
 }
 
 /// One call's arguments, bound to the parameters they fill.
+/// The values a scope knows an array holds: given an array expression's
+/// text, the types it narrowed reads of that array's elements to (the
+/// `'foo'` that `$arr[17] === 'foo'` left for `$arr[17]`).
+pub(crate) type ElementReads<'a> = Option<&'a dyn Fn(&str) -> Vec<PhpType>>;
+
 struct CallArgs<'a> {
     params: &'a [ParameterInfo],
     args: Vec<&'a str>,
     resolver: ArgTypeResolver<'a>,
+    element_reads: ElementReads<'a>,
 }
 
 impl CallArgs<'_> {
@@ -732,6 +740,7 @@ pub(crate) fn call_site_throws(
         params: &function.parameters,
         args,
         resolver: arg_type_resolver,
+        element_reads: None,
     };
     let flags = args.text("$flags")?;
     bitmask_sets_flag(

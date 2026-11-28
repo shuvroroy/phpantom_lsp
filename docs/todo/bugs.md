@@ -33,29 +33,6 @@ No outstanding items.
 
 ## Standard-library return types
 
-### B819. Built-ins whose result their arguments decide return the declared type
-
-**Impact: Low · Complexity: Medium**
-
-```php
-/** @var array<int, string> $arr */
-if (array_key_exists(17, $arr) && $arr[17] === 'foo') {
-    array_search('foo', $arr);       // int|false, should be int
-}
-```
-
-Narrowing `$arr[17]` to `'foo'` leaves `$arr` a plain
-`non-empty-array<int, string>`, so `array_search()` cannot see that the
-needle is certainly there. Ruling `false` out needs the array type to carry
-the narrowed offset's value (PHPStan's `HasOffsetValueType`).
-
-It also shows as PECL extension calls whose return type PHPStan picks from
-the arguments, which use the stub's full union.
-
-**Fix:** add per-function rules (`type_ops/call_site_returns/`, stub patches with conditional returns, or the array/function rule tables) one function at a time; each upstream fixture is the spec for its function.
-
-**Cases** (PHPStan `nsrt/`): the `// SKIP` lines in `array-search.php`.
-
 ### B822. A `preg_match()` capture group that can only match fixed text is typed `string`
 
 **Impact: Low · Complexity: Low-Medium**
