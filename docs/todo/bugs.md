@@ -1946,16 +1946,3 @@ completion goes through the same path. `// SKIP` lines in
 `methodPhpDocs-recursiveTrait.php`.
 
 **Upstream cases** (PHPStan `nsrt/`, 6 assertions): `bug-4423.php` (3), `bug-9341.php` (2), `inheritdoc-without-curly-braces-from-trait.php`.
-
-### B802. `::class` on a string literal has no type
-
-**Impact: Low · Complexity: Low**
-
-```php
-'Foo'::class;   // no type, should be 'Foo'
-```
-
-PHP returns the string itself.
-
-**Fix:** resolve `::class` on a string literal to that literal. See
-`tests/phpstan_nsrt/class-constant-on-expr.php`.

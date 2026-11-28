@@ -1,0 +1,10 @@
+// test: ::class on a string literal is the string without a leading backslash
+// feature: hover
+// expect: $class = 'Acme\\Pen'
+---
+<?php
+
+function test(): void {
+    $class = ('\Acme\Pen')::class;
+    $<>class;
+}

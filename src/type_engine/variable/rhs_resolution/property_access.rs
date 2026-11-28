@@ -179,6 +179,11 @@ fn class_constant_access_type(
         // `$value::class` / `$value::CONST` (PHP 8.0+): the class is
         // whatever the expression holds.
         None => {
+            if is_class_fetch && let Some(name) = string_literal_class_fetch(cca.class) {
+                return vec![ResolvedType::from_type_string(
+                    PhpType::literal_string_value(name),
+                )];
+            }
             let held = resolve_rhs_expression(cca.class, ctx);
             if is_class_fetch {
                 return class_fetch_on_value(&held);
@@ -699,6 +704,20 @@ fn this_property_owners(prop_name: &str, ctx: &VarResolutionCtx<'_>) -> Vec<Arc<
 ///
 /// A non-object member (`null`, a scalar) throws at runtime rather than
 /// producing a class name, so it contributes nothing.
+/// `'Foo'::class` gives the string itself, without a leading `\`. PHP
+/// accepts this only for a string written in the source: the same string
+/// held in a variable throws a `TypeError`.
+fn string_literal_class_fetch(mut expr: &Expression<'_>) -> Option<String> {
+    while let Expression::Parenthesized(inner) = expr {
+        expr = inner.expression;
+    }
+    let Expression::Literal(Literal::String(string)) = expr else {
+        return None;
+    };
+    let value = bytes_to_str(string.value?);
+    Some(value.strip_prefix('\\').unwrap_or(value).to_string())
+}
+
 fn class_fetch_on_value(held: &[ResolvedType]) -> Vec<ResolvedType> {
     let mut members: Vec<PhpType> = Vec::new();
     for rt in held {
