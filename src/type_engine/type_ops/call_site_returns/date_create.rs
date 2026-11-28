@@ -5,17 +5,17 @@
 //! `DateTimeDynamicReturnTypeExtension`, which run the call at analysis
 //! time.
 //!
-//! PHP's free-form parser (`timelib`'s `strtotime()` grammar) is far too
-//! large to port, so `date_create()` only recognises the spellings that are
-//! certainly valid and leaves every other string undecided. The
-//! `_from_format` variants follow `timelib_parse_from_format()` field by
+//! The free-form strings go through a port of PHP's date grammar
+//! (`date_grammar`), which leaves a string undecided only when the answer
+//! hangs on the build's timezone database. The `_from_format` variants
+//! follow `timelib_parse_from_format()` field by
 //! field for the numeric and textual-name fields, which is enough to prove
 //! a string either matches or does not; a format using any other field is
 //! undecided.
 
 use crate::php_type::PhpType;
 
-use super::{CallArgs, literal_strings, without_false};
+use super::{CallArgs, date_grammar, literal_strings, without_false};
 
 /// How many format and datetime pairs a call may try before it is left to
 /// the declared type.
@@ -69,7 +69,7 @@ pub(crate) fn created(
                 .iter()
                 .map(|format| parse_from_format(format.as_bytes(), datetime.as_bytes()))
                 .collect(),
-            None => vec![certainly_valid(datetime).then_some(true)],
+            None => vec![free_form_accepts(datetime)],
         };
         for outcome in outcomes {
             match outcome? {
@@ -111,10 +111,13 @@ const UNITS: [&str; 10] = [
     "year",
 ];
 
-/// Whether `datetime` is one of the spellings `date_create()` certainly
-/// accepts. The empty string is the current time there.
-fn certainly_valid(datetime: &str) -> bool {
-    datetime.trim().is_empty() || recognise(datetime).is_some()
+/// Whether `date_create()` accepts `datetime`, `None` when that is
+/// undecided. The empty string is the current time there.
+fn free_form_accepts(datetime: &str) -> Option<bool> {
+    if datetime.trim().is_empty() {
+        return Some(true);
+    }
+    date_grammar::accepts(datetime)
 }
 
 /// Which spelling `datetime` is, when it is one this recognises: a keyword,
@@ -216,21 +219,22 @@ fn recognise(datetime: &str) -> Option<Spelling> {
 }
 
 /// `strtotime($datetime, $baseTimestamp)` over a literal: an `int` for a
-/// string PHP certainly accepts, positive when it is now or a date from
-/// 1971 on, and `false` for the empty string. Any other string is
-/// undecided.
+/// string PHP accepts, positive when it is now or a date from 1971 on, and
+/// `false` for the empty string and every string PHP rejects.
 pub(super) fn strtotime(datetime: &PhpType, has_base: bool) -> Option<PhpType> {
     let mut results: Vec<PhpType> = Vec::new();
     for datetime in literal_strings(datetime)? {
         let ty = if datetime.is_empty() {
             PhpType::false_()
         } else {
-            match recognise(&datetime)? {
+            match recognise(&datetime) {
                 // An offset can reach back before 1970, and so can anything
                 // relative to a timestamp the caller chose.
-                Spelling::Keyword if !has_base => PhpType::int_range("1", "max"),
-                Spelling::Iso { year } if year > 1970 => PhpType::int_range("1", "max"),
-                _ => PhpType::int(),
+                Some(Spelling::Keyword) if !has_base => PhpType::int_range("1", "max"),
+                Some(Spelling::Iso { year }) if year > 1970 => PhpType::int_range("1", "max"),
+                Some(_) => PhpType::int(),
+                None if date_grammar::accepts(&datetime)? => PhpType::int(),
+                None => PhpType::false_(),
             }
         };
         if !results.contains(&ty) {

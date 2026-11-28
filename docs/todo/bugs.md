@@ -38,48 +38,23 @@ No outstanding items.
 **Impact: Low · Complexity: Medium**
 
 ```php
-strtotime('4 qm');                   // int|false, should be false
-date_create('202/20');               // DateTime|false, should be false
-```
-
-`date_create()` and `strtotime()` only recognise ISO dates, relative day
-keywords and `+N unit` offsets, so a string PHP rejects is never folded to
-`false`. Saying `false` safely needs a reading of PHP's date grammar that
-knows every form it accepts.
-
-It also shows as:
-
-- PECL extension calls whose return type PHPStan picks from the arguments use the stub's full union
-- `ArrayObject` offset reads give `TValue`, while the stub's `offsetGet()` says `TValue|null`: an offset read takes the class's generic value type ahead of `offsetGet()`, which collections rely on, so making it nullable is a policy decision
-- `array_search()` on a generic array whose offset was narrowed to the needle (`$arr[17] === 'foo'`) still includes `false`
-- A callback parameter bound to a shape's key type (`array_find_key($shape, fn ($v, $k) => …)`) gets `string` or `int`, not the shape's literal keys
-- `get_called_class()` in a trait names the trait (`class-string<MyTrait>`), as `static::class` there does, instead of the using class
-
-**Fix:** add per-function rules (`type_ops/call_site_returns/`, stub patches with conditional returns, or the array/function rule tables) one function at a time; each upstream fixture is the spec for its function.
-
-**Cases** (PHPStan `nsrt/`): the `// SKIP` lines in `array-search.php`, `array-find-key.php`, `DateTimeCreateDynamicReturnTypes.php` and `strtotime-return-type-extensions.php`; `bug-9341.php` and `bug-13144.php` (unported).
-
-### B821. `preg_match()` gives a generic array for a pattern that is not one plain literal
-
-**Impact: Medium · Complexity: Low-Medium**
-
-```php
-if (preg_match('{' . preg_quote($s) . '(z)}', $s, $m)) {
-    $m; // got array<array-key, string>, should be array{non-falsy-string, 'z'}
-} else {
-    $m; // got array<array-key, string>, should be array{}
+/** @var array<int, string> $arr */
+if (array_key_exists(17, $arr) && $arr[17] === 'foo') {
+    array_search('foo', $arr);       // int|false, should be int
 }
 ```
 
-Concatenation with `preg_quote()`, a variable holding one of several literal patterns, a variable assigned a double-quoted pattern, and nowdoc/heredoc patterns all give the generic fallback, even in the no-match branch where the result is always `array{}`.
+Narrowing `$arr[17]` to `'foo'` leaves `$arr` a plain
+`non-empty-array<int, string>`, so `array_search()` cannot see that the
+needle is certainly there. Ruling `false` out needs the array type to carry
+the narrowed offset's value (PHPStan's `HasOffsetValueType`).
 
-It also shows as:
+It also shows as PECL extension calls whose return type PHPStan picks from
+the arguments, which use the stub's full union.
 
-- `preg_match()` gives a generic array for an `x`-flag pattern or a pattern held in a variable or constant
-- A `preg_match()` pattern concatenated with a constant is not read
-- `preg_match()` with a non-constant flags argument ignores the flags
+**Fix:** add per-function rules (`type_ops/call_site_returns/`, stub patches with conditional returns, or the array/function rule tables) one function at a time; each upstream fixture is the spec for its function.
 
-**Cases** (PHPStan `nsrt/`, 46 assertions): `preg_match_shapes.php` (38), `bug-11311.php` (3), `bug-12242.php` (3), `bug-12211.php`, `bug11384.php`.
+**Cases** (PHPStan `nsrt/`): the `// SKIP` lines in `array-search.php`.
 
 ### B822. A `preg_match()` capture group that can only match fixed text is typed `string`
 
@@ -1949,7 +1924,9 @@ trait FooTrait {
 ```
 
 PHP flattens a trait into each class that uses it, so inside its methods
-`self`, `static`, `parent` and `$this` all refer to that class. PHPStan
+`self`, `static`, `parent` and `$this` all refer to that class.
+`get_called_class()` in a trait follows `static::class` and names the trait
+(`class-string<MyTrait>`) instead of the using class. PHPStan
 analyses a trait body once per using class. PHPantom analyses it on its own,
 standing `$this` in for the intersection of the trait with everything its
 users share (`type_engine/trait_context.rs`); `self` gets the same

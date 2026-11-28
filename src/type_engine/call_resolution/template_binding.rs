@@ -31,7 +31,8 @@ use super::constant_operands::type_operator_bound_literal;
 use super::return_types::literal_arg_type;
 use super::template_subs::{
     bind_callable_param_template, bind_callable_return_template, callable_bindings_last,
-    generalize_object_template_arg, names_template_directly, unify_template, wrapper_arity,
+    generalize_object_template_arg, names_template_directly, unify_template,
+    with_literal_shape_keys, wrapper_arity,
 };
 
 /// The parts of a callee's signature its templates bind through.
@@ -522,7 +523,7 @@ fn bind_generic_wrapper(
         if resolved.is_empty_array_shape() {
             return Some(PhpType::never());
         }
-        let resolved = resolved.generalized_array();
+        let resolved = with_literal_shape_keys(&resolved, resolved.generalized_array());
         return match (arity, tpl_position) {
             (0 | 1, _) | (_, 1) => resolved.extract_value_type(false).cloned(),
             // `array<V>`, `V[]` and a bare `array` name no key type, so

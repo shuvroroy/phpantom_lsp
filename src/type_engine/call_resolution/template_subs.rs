@@ -697,6 +697,33 @@ pub(super) fn unify_template(
     (!bound.is_empty()).then(|| PhpType::union(bound))
 }
 
+/// `generalized`, the container a keyed shape describes, with the shape's
+/// own keys as its key type: a template bound to the keys of
+/// `array{foo: 1, bar: 2}` is `'foo'|'bar'`, as one bound to its values
+/// is `1|2`.
+pub(super) fn with_literal_shape_keys(shape: &PhpType, generalized: PhpType) -> PhpType {
+    let TypeKind::ArrayShape(entries) = shape.kind() else {
+        return generalized;
+    };
+    let TypeKind::Generic(generic) = generalized.kind() else {
+        return generalized;
+    };
+    if generic.args.len() != 2 {
+        return generalized;
+    }
+    let Some(keys) = crate::php_type::runtime_shape_keys(entries) else {
+        return generalized;
+    };
+    let mut literals: Vec<PhpType> = Vec::with_capacity(keys.len());
+    for key in &keys {
+        let ty = crate::php_type::shape_key_type(key);
+        if !literals.contains(&ty) {
+            literals.push(ty);
+        }
+    }
+    PhpType::generic_array(PhpType::union(literals), generic.args[1].clone())
+}
+
 fn unify_template_shape(
     param_hint: &PhpType,
     arg_type: &PhpType,
@@ -728,7 +755,7 @@ fn unify_template_shape(
             let arg_type = if !arg_type.is_empty_array_shape()
                 && crate::type_engine::variable::rhs_resolution::is_array_like_wrapper(&hint.name)
             {
-                generalized = arg_type.generalized_array();
+                generalized = with_literal_shape_keys(arg_type, arg_type.generalized_array());
                 &generalized
             } else {
                 arg_type

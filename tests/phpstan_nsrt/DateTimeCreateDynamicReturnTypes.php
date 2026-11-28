@@ -13,8 +13,8 @@ class Foo
 	}
 
 	public function staticInvalidDatetime(): void {
-		assertType('false', date_create('202/20')); // SKIP: `date_create()` of a string it rejects is not folded to `false`
-		assertType('false', date_create_immutable('202/20')); // SKIP: `date_create()` of a string it rejects is not folded to `false`
+		assertType('false', date_create('202/20'));
+		assertType('false', date_create_immutable('202/20'));
 	}
 
 	public function staticValidStrings(): void {
@@ -41,8 +41,8 @@ class Foo
 		assertType('DateTime|false', date_create($maybeDatetimes));
 		assertType('DateTimeImmutable|false', date_create_immutable($maybeDatetimes));
 
-		assertType('false', date_create($noDatetimes)); // SKIP: `date_create()` of a string it rejects is not folded to `false`
-		assertType('false', date_create_immutable($noDatetimes)); // SKIP: `date_create()` of a string it rejects is not folded to `false`
+		assertType('false', date_create($noDatetimes));
+		assertType('false', date_create_immutable($noDatetimes));
 	}
 
 }

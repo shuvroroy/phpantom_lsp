@@ -51,7 +51,7 @@ namespace ArrayFindKey
 	{
 		$subject = ['foo' => 1, 'bar' => null, 'buz' => ''];
 		$result = array_find_key($subject, function ($value, $key) {
-			assertType("array{value: 1|''|null, key: 'bar'|'buz'|'foo'}", compact('value', 'key')); // SKIP: a callback parameter bound to a shape's key type gets `string`, not the literal keys
+			assertType("array{value: 1|''|null, key: 'bar'|'buz'|'foo'}", compact('value', 'key'));
 
 			return is_int($value);
 		});

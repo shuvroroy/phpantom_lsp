@@ -73,17 +73,18 @@ fn leaves_unread_fields_undecided() {
 #[test]
 fn recognises_valid_free_form_dates() {
     for datetime in DATE_CREATE_VALID {
-        assert!(certainly_valid(datetime), "date_create({datetime:?})");
+        assert_eq!(
+            free_form_accepts(datetime),
+            Some(true),
+            "date_create({datetime:?})"
+        );
     }
-    for datetime in [
-        "foo",
-        "202/20",
-        "2020-10-12T25:00",
-        "2020-13-01",
-        "next monday",
-        "4 qm",
-    ] {
-        assert!(!certainly_valid(datetime), "date_create({datetime:?})");
+    for datetime in ["foo", "202/20", "2020-10-12T25:00", "4 qm"] {
+        assert_eq!(
+            free_form_accepts(datetime),
+            Some(false),
+            "date_create({datetime:?})"
+        );
     }
 }
 
@@ -101,5 +102,7 @@ fn types_strtotime_by_spelling() {
     );
     assert_eq!(ty("1969-12-31 12:00:00 UTC", false).as_deref(), Some("int"));
     assert_eq!(ty("", false).as_deref(), Some("false"));
-    assert_eq!(ty("4 qm", false), None);
+    assert_eq!(ty("4 qm", false).as_deref(), Some("false"));
+    assert_eq!(ty("next monday", false).as_deref(), Some("int"));
+    assert_eq!(ty("Europe/Copenhagen", false), None);
 }

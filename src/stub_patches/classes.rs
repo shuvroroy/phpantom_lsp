@@ -17,6 +17,7 @@ pub fn apply_class_stub_patches(class: &mut ClassInfo) {
         "IteratorIterator" => patch_iterator_iterator(class),
         "RecursiveIteratorIterator" => patch_recursive_iterator_iterator(class),
         "RecursiveArrayIterator" => patch_recursive_array_iterator(class),
+        "ArrayObject" => patch_array_object(class),
         "FilterIterator" => patch_filter_iterator(class),
         "NoRewindIterator" => patch_no_rewind_iterator(class),
         "CachingIterator" => patch_caching_iterator(class),
@@ -876,6 +877,30 @@ fn patch_constructor_template_binding(class: &mut ClassInfo, template: &str, par
         .find(|p| p.name == param)
     {
         p.type_hint = Some(PhpType::named(template));
+    }
+    class.methods.make_mut()[ctor_idx] = std::sync::Arc::new(ctor);
+}
+
+/// `ArrayObject`'s constructor takes `array<TKey, TValue>|object`, as
+/// PHPStan's stub says. phpstorm-stubs write `array<TValue>|object`, which
+/// leaves the key template unbound.
+fn patch_array_object(class: &mut ClassInfo) {
+    let Some(ctor_idx) = method_index(class, "__construct") else {
+        return;
+    };
+    let mut ctor = (*class.methods[ctor_idx]).clone();
+    let Some(param) = ctor
+        .parameters
+        .make_mut()
+        .iter_mut()
+        .find(|p| p.name == "$array")
+    else {
+        return;
+    };
+    param.type_hint = Some(PhpType::parse("array<TKey, TValue>|object"));
+    let param = param.name;
+    for template in ["TKey", "TValue"] {
+        bind_ctor_template(&mut ctor, &class.template_params, atom(template), param);
     }
     class.methods.make_mut()[ctor_idx] = std::sync::Arc::new(ctor);
 }

@@ -8,10 +8,10 @@ $strtotimeNow = strtotime('now');
 assertType('int<1, max>', $strtotimeNow);
 
 $strtotimeInvalid = strtotime('4 qm');
-assertType('false', $strtotimeInvalid); // SKIP: `strtotime()` of a string it rejects is not folded to `false`
+assertType('false', $strtotimeInvalid);
 
 $strtotimeUnknown = strtotime(rand(0, 1) === 0 ? 'now': '4 qm');
-assertType('int|false', $strtotimeUnknown);
+assertType('int<1, max>|false', $strtotimeUnknown);
 
 $strtotimeUnknown2 = strtotime($undefined);
 assertType('(int|false)', $strtotimeUnknown2);

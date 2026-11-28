@@ -1410,6 +1410,7 @@ dependencies = [
  "mimalloc",
  "parking_lot",
  "regex",
+ "regex-automata",
  "self-replace",
  "serde",
  "serde_ignored",
