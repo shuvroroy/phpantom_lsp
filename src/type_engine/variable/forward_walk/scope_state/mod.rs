@@ -573,6 +573,7 @@ impl ScopeState {
         self.closure_captures.remove(&key);
         self.invalidate_proofs(var_name);
         self.unbind_reference(&key);
+        self.unbind_paths_through(var_name);
     }
 
     /// Remove synthetic keys that read `var_name` — a path rooted at it
@@ -584,6 +585,7 @@ impl ScopeState {
         self.locals.retain_compound(|key| {
             !crate::type_engine::type_ops::condition_facts::key_reads_variable(key, var_name)
         });
+        self.unbind_paths_through(var_name);
     }
 
     /// Drop what a call on `receiver` could have changed.

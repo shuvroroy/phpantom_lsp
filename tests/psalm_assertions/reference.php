@@ -95,7 +95,7 @@ namespace PsalmTest_reference_8 {
 
     $foo->bar = "bar";
 
-    assertType('\'bar\'', $bar); // SKIP: a write to a property is not seen through a reference to it
+    assertType('\'bar\'', $bar);
 }
 
 // Test: allowDocblockTypingOtherVariable

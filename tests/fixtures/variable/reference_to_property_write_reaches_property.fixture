@@ -1,0 +1,16 @@
+// test: a write through a reference to a property changes the property
+// feature: hover
+// expect: $x = 'bar'
+---
+<?php
+
+class Foo {
+    public string $bar = '';
+}
+
+function test(Foo $foo): void {
+    $r = &$foo->bar;
+    $r = 'bar';
+    $x = $foo->bar;
+    echo $<>x;
+}

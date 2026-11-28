@@ -617,6 +617,24 @@ fn process_reference_assignment<'b>(
             });
             (element, bound)
         }
+        // `$r = &$obj->prop` / `$r = &self::$prop` binds `$r` to the
+        // property-path key a write to the property records.  A property
+        // reached through `__get` has no storage to share.
+        Expression::Access(Access::Property(_) | Access::StaticProperty(_)) => {
+            let Some(key) = condition_facts::expr_to_subject_key(target) else {
+                return false;
+            };
+            if property_write_dispatches_to_magic_set(target, scope, ctx) {
+                return false;
+            }
+            let types = resolve_rhs_with_scope(target, scope, ctx);
+            // `$o = &$o->next` walks the reference down into the object it
+            // named: the property it leaves is no longer reachable through
+            // any name the walker tracks.
+            let bound = (!condition_facts::key_reads_variable(&key, lhs))
+                .then(|| RefTarget::Var(atom(&key)));
+            (types, bound)
+        }
         _ => return false,
     };
     scope.invalidate_dependent_keys(lhs);

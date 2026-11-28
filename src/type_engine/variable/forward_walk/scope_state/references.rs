@@ -118,6 +118,23 @@ impl ScopeState {
         }
     }
 
+    /// Drop the bindings to a property reached through `name`
+    /// (`$r = &$name->prop`), for a write that replaces the object `name`
+    /// holds: the bound variable keeps sharing the old object's property,
+    /// which no name the walker tracks reaches any more.
+    pub(super) fn unbind_paths_through(&mut self, name: &str) {
+        let Some(links) = self.ref_links.as_mut() else {
+            return;
+        };
+        links.0.retain(|link| {
+            !matches!(&link.target, RefTarget::Var(target)
+                if crate::type_engine::type_ops::condition_facts::key_reads_variable(target, name))
+        });
+        if links.0.is_empty() {
+            self.ref_links = None;
+        }
+    }
+
     /// Carry the entry just written to `name` over to everything bound to
     /// it.
     pub(super) fn propagate_reference_write(&mut self, name: Atom) {

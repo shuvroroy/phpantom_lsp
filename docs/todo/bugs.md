@@ -1186,7 +1186,7 @@ $b[0] = 2;
 $a; // got 1, should be 2
 ```
 
-References to locals are tracked, but not when the `&$var` sits inside an array literal. Neighbour of B812 (references to properties).
+References to locals are tracked, but not when the `&$var` sits inside an array literal.
 
 It also shows as:
 
@@ -1959,18 +1959,3 @@ PHP returns the string itself.
 
 **Fix:** resolve `::class` on a string literal to that literal. See
 `tests/phpstan_nsrt/class-constant-on-expr.php`.
-
-### B812. A write to a property is not seen through a reference to it
-
-**Impact: Low · Complexity: Medium**
-
-```php
-$bar = &$foo->bar;
-$foo->bar = "bar";
-$bar;   // string, should be 'bar'
-```
-
-References to locals are tracked; a reference to a property is not.
-
-**Fix:** record `&$obj->prop` as a reference the way `&$local` is. See
-`tests/psalm_assertions/reference.php`.
